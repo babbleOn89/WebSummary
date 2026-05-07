@@ -58,12 +58,20 @@ def fetch_text(url):
             header.decompose()
 
     paragraphs = soup.find_all("p")
-    text = " ".join(p.get_text() for p in paragraphs)
+    paragraphs = soup.find_all("p")[:5] #limits to intro, overview, & main info
 
-    text = re.sub(r"http\S+", "", text)
-    text = re.sub(r"\s+", " ", text)
+    article_text = ""
 
-    return text.strip()
+    for p in paragraphs:
+        text = p.get_text().strip()
+
+        if len(text) > 80:
+            article_text += text + "\n"
+
+    article_text = re.sub(r"http\S+", "", article_text)
+    article_text = re.sub(r"\s+", " ", article_text)
+
+    return article_text.strip()
 
 #Summarization
 def summarize(text, num_sentences=5):
